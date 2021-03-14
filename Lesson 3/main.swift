@@ -9,6 +9,20 @@ import Foundation
 
 // Задание 1: Описать несколько структур – любой легковой автомобиль SportCar и любой грузовик TrunkCar.
 
+enum EngineState: String {
+    case running = "запущен"
+    case stopped = "заглушен"
+}
+
+enum WindowState: String {
+    case open = "открыты"
+    case closed = "закрыты"
+}
+enum TrailerState: String {
+    case installed = "установлен"
+    case uninstalled = "снят"
+    }
+
 struct SportCar {
     let model: String
     let year: Int
@@ -60,43 +74,36 @@ struct SportCar {
             printTrunkLoad()
         }
     }
+    
+    func printCarInfo() {
+        print("---------------------------------")
+        print("Марка: \(model)")
+        print("Год выпуска: \(year)")
+        print("Объем багажника: \(maxTrunkVolume)")
+        print("Двигатель: \(engine.rawValue)")
+        print("Окна: \(windowState.rawValue)")
+        print("Загрузка багажника: \(usedTrunkVolume) из \(maxTrunkVolume)")
+        print("---------------------------------")
+    }
 }
 
-enum EngineState: String {
-    case running = "запущен"
-    case stopped = "заглушен"
-}
 
-enum WindowState: String {
-    case open = "открыты"
-    case closed = "закрыты"
-}
 
-func printCarInfo(car: SportCar) {
-    print("---------------------------------")
-    print("Марка: \(car.model)")
-    print("Год выпуска: \(car.year)")
-    print("Объем багажника: \(car.maxTrunkVolume)")
-    print("Двигатель: \(car.engine.rawValue)")
-    print("Окна: \(car.windowState.rawValue)")
-    print("Загрузка багажника: \(car.usedTrunkVolume) из \(car.maxTrunkVolume)")
-    print("---------------------------------")
-}
 
 var toyotaSupra = SportCar(model: "Toyota Supra", year: 2005, maxTrunkVolume: 500, engine: .stopped, windowState: .closed, usedTrunkVolume: 0.0)
 
-printCarInfo(car: toyotaSupra)
+toyotaSupra.printCarInfo()
 toyotaSupra.engineState(.running)
 toyotaSupra.windowState(.open)
 toyotaSupra.trunkLoad(150)
 toyotaSupra.trunkLoad(351)
 toyotaSupra.trunkUnload(100)
 toyotaSupra.trunkUnload(60)
-printCarInfo(car: toyotaSupra)
+toyotaSupra.printCarInfo()
 
 var nissanSkyline = SportCar(model: "Nissan Skyline", year: 2009, maxTrunkVolume: 600, engine: .running, windowState: .open, usedTrunkVolume: 500)
 
-printCarInfo(car: nissanSkyline)
+nissanSkyline.printCarInfo()
 
 nissanSkyline.windowState(.closed)
 nissanSkyline.engineState(.stopped)
@@ -104,7 +111,7 @@ nissanSkyline.trunkLoad(150)
 nissanSkyline.trunkUnload(50)
 nissanSkyline.trunkLoad(150)
 
-printCarInfo(car: nissanSkyline)
+nissanSkyline.printCarInfo()
 
 // ----------------------------------------------
 
@@ -116,9 +123,7 @@ struct TrunkCar {
         get {
             if trailerState == .installed {
                 return carTrunkVolume + trailerVolume
-            } else {
-                return carTrunkVolume
-            }
+            } else { return carTrunkVolume }
             
         }
     }
@@ -128,20 +133,8 @@ struct TrunkCar {
     var trailerState: TrailerState
     var trailerVolume: Double
     
-    enum TrailerState: String {
-        case installed = "установлен"
-        case uninstalled = "снят"
-        }
-    
-    enum EngineState: String {
-        case running = "запущен"
-        case stopped = "заглушен"
-    }
 
-    enum WindowState: String {
-        case open = "открыты"
-        case closed = "закрыты"
-    }
+
     
     mutating func trailerState(_ trailer: TrailerState) {
         trailerState = trailer
@@ -183,9 +176,9 @@ struct TrunkCar {
         } else if (usedTrunkVolume + cargo) > totalTrunkVolume && trailerState == .installed {
             print("Недостаточно места. Свободно только \(totalTrunkVolume - usedTrunkVolume). Выгрузите \(cargo - (totalTrunkVolume - usedTrunkVolume))")
             
-            printTrunkLoad()
-        }
+            printTrunkLoad() }
     }
+    
     mutating func trunkUnload(_ cargo: Double) {
         print("---------------------------------")
         print("Выгружаем груз объемом \(cargo)")
@@ -200,28 +193,29 @@ struct TrunkCar {
             printTrunkLoad()
         }
     }
+    func printCarInfo() {
+        print("---------------------------------")
+        print("Марка: \(model)")
+        print("Год выпуска: \(year)")
+        print("Объем основного кузова: \(carTrunkVolume)")
+        print("Прицеп: \(trailerState.rawValue)")
+        print("Объем прицепа: \(trailerVolume)")
+        print("Общий объем кузова: \(totalTrunkVolume)")
+        print("Двигатель: \(engine.rawValue)")
+        print("Окна: \(windowState.rawValue)")
+        print("Загрузка кузова: \(usedTrunkVolume) из \(totalTrunkVolume)")
+        print("---------------------------------")
+    }
+
 }
 
-func printCarInfo(car: TrunkCar) {
-    print("---------------------------------")
-    print("Марка: \(car.model)")
-    print("Год выпуска: \(car.year)")
-    print("Объем основного кузова: \(car.carTrunkVolume)")
-    print("Прицеп: \(car.trailerState.rawValue)")
-    print("Объем прицепа: \(car.trailerVolume)")
-    print("Общий объем кузова: \(car.totalTrunkVolume)")
-    print("Двигатель: \(car.engine.rawValue)")
-    print("Окна: \(car.windowState.rawValue)")
-    print("Загрузка кузова: \(car.usedTrunkVolume) из \(car.totalTrunkVolume)")
-    print("---------------------------------")
-}
 
 
 var kamaz = TrunkCar(model: "Kamaz", year: 1980, carTrunkVolume: 1000, engine: .running, windowState: .open, usedTrunkVolume: 300, trailerState: .uninstalled, trailerVolume: 1500)
-printCarInfo(car: kamaz)
+kamaz.printCarInfo()
 kamaz.trunkLoad(1500)
 kamaz.trailerState(.installed)
 kamaz.trunkLoad(1500)
 kamaz.trunkUnload(800)
 kamaz.trailerState(.uninstalled)
-printCarInfo(car: kamaz)
+kamaz.printCarInfo()
